@@ -1,0 +1,114 @@
+project_name: ssh-chat
+
+env:
+  - GO111MODULE=on
+  - CGO_ENABLED=0
+
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - id: "ssh-chat"
+    dir: "./cmd/ssh-chat"
+    binary: "ssh-chat"
+    ldflags: -X main.Version={{ .Version }} -extldflags "-static"
+    goos:
+      - linux
+      - windows
+      - freebsd
+      - darwin
+    goarch:
+      - amd64
+      - 386
+      - arm
+      - arm64
+    goarm:
+      - 7
+    ignore:
+      - goos: darwin
+        goarch: 386
+      - goos: darwin
+        goarch: arm
+      - goos: freebsd
+        goarch: 386
+      - goos: freebsd
+        goarch: arm
+      - goos: freebsd
+        goarch: arm64
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+
+dockers:
+  - image_templates:
+      - "ghcr.io/aymanbagabas/ssh-chat:latest"
+      - "ghcr.io/aymanbagabas/ssh-chat:{{ .Version }}"
+    ids: [ssh-chat]
+    goarch: amd64
+    build_flag_templates:
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/shazow/ssh-chat
+      - --label=org.opencontainers.image.source=https://github.com/shazow/ssh-chat
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+  - image_templates:
+      - "ghcr.io/aymanbagabas/ssh-chat:latest"
+      - "ghcr.io/aymanbagabas/ssh-chat:{{ .Version }}"
+    ids: [ssh-chat]
+    goarch: arm64
+    build_flag_templates:
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/shazow/ssh-chat
+      - --label=org.opencontainers.image.source=https://github.com/shazow/ssh-chat
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+
+nfpms:
+  - maintainer: Andrey Petrov <andrey.petrov@shazow.net>
+    description: "{{ .ProjectName }}"
+    homepage: https://github.com/shazow/ssh-chat
+    license: MIT
+    formats:
+      - deb
+      - rpm
+
+archives:
+  - id: ssh-chat
+    builds:
+    - ssh-chat
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE*
+      - README*
+      - CHANGELOG*
+
+release:
+  github:
+    owner: aymanbagabas
+    name: ssh-chat
+  ids: [ssh-chat]
+  prerelease: auto
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - typo
