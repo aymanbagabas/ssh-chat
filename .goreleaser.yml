@@ -44,8 +44,8 @@ builds:
 
 dockers:
   - image_templates:
-      - "ghcr.io/shazow/ssh-chat:latest"
-      - "ghcr.io/shazow/ssh-chat:{{ .Version }}"
+      - "ghcr.io/aymanbagabas/ssh-chat:latest"
+      - "ghcr.io/aymanbagabas/ssh-chat:{{ .Version }}"
     ids: [ssh-chat]
     goarch: amd64
     build_flag_templates:
@@ -61,8 +61,8 @@ dockers:
     dockerfile: Dockerfile.goreleaser
     use: buildx
   - image_templates:
-      - "ghcr.io/shazow/ssh-chat:latest"
-      - "ghcr.io/shazow/ssh-chat:{{ .Version }}"
+      - "ghcr.io/aymanbagabas/ssh-chat:latest"
+      - "ghcr.io/aymanbagabas/ssh-chat:{{ .Version }}"
     ids: [ssh-chat]
     goarch: arm64
     build_flag_templates:
@@ -104,7 +104,7 @@ archives:
 
 release:
   github:
-    owner: shazow
+    owner: aymanbagabas
     name: ssh-chat
   ids: [ssh-chat]
   prerelease: auto
